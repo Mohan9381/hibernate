@@ -1,1 +1,1090 @@
+1.Configure Hibernate in eclipse IDE.
+Configuring Hibernate with Hibernate.cfg.xml:
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>       
+  <session-factory>
+    <!-- Database connection settings -->
+    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="connection.url">jdbc:mysql://localhost:3306/ecommerce</property>
+    <property name="connection.username">mysql user id</property>
+    <property name="connection.password">mysql password</property>
+  </session-factory>
+</hibernate-configuration>
+Creating an HTML page index.html:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Hibernate Configuration Example</title>
+</head>
+<body>
+<a href="init">Initialize Hibernate</a><br>
+
+</body>
+</html>
+Creating a hibernate util class to initate hibernate in code:
+package com.ecommerce;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+
+public class HibernateUtil {
+
+        private static final SessionFactory sessionFactory;
+
+        static {
+                try {
+                        StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+                                        .configure("hibernate.cfg.xml").build();
+                        Metadata metaData = new MetadataSources(standardRegistry).getMetadataBuilder().build();
+                        sessionFactory = metaData.getSessionFactoryBuilder().build();
+                } catch (Throwable th) {
+                        throw new ExceptionInInitializerError(th);
+                }
+        }
+
+        public static SessionFactory getSessionFactory() {
+                return sessionFactory;
+        }
+}
+
+Creating an InitHibernate servlet:
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.*;
+import javax.xml.bind.*;
+
+import java.io.Serializable;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+
+import com.ecommerce.EProduct;
+import com.ecommerce.HibernateUtil;
+
+
+/**
+* Servlet implementation class InitHibernate
+*/
+@WebServlet("/InitHibernate")
+public class InitHibernate extends HttpServlet {
+        private static final long serialVersionUID = 1L;
+       
+        
+        
+    /**
+* @see HttpServlet#HttpServlet()
+*/
+    public InitHibernate() {
+        super();
+        // TODO Auto-generated constructor stub
+        
+    }
+
+   
+        /**
+         * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+         */
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+                // TODO Auto-generated method stub
+                 try {
+                         PrintWriter out = response.getWriter();
+                         out.println("<html><body>");
+
+                         SessionFactory factory = HibernateUtil.getSessionFactory();
+                                
+                         Session session = factory.openSession();
+                         out.println("Hibernate Session opened.<br>");
+                         session.close();
+                         out.println("Hibernate Session closed.<br>");
+                                
+                         out.println("</body></html>");
+                            
+                             
+                         } catch (Exception ex) {
+                                 throw ex;
+                         }
+
+        }
+
+        /**
+         * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+         */
+        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+                // TODO Auto-generated method stub
+                doGet(request, response);
+        }
+
+}
+Configuring web.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>HibernateConfig</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>InitHibernate</servlet-name>
+    <servlet-class>InitHibernate</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InitHibernate</servlet-name>
+    <url-pattern>/init</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
+
+ 2.
+Configuring hibernate with hibernate.cfg.xml:
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>       
+  <session-factory>
+    <!-- Database connection settings -->
+    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="connection.url">jdbc:mysql://localhost:3306/ecommerce</property>
+    <property name="connection.username">mysql user id</property>
+    <property name="connection.password">mysql password</property>
+  </session-factory>
+</hibernate-configuration>
+Creating a hibernate util class to initate hibernate in code:
+package com.ecommerce;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+
+public class HibernateUtil {
+
+        private static final SessionFactory sessionFactory;
+
+        static {
+                try {
+                        StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+                                        .configure("hibernate.cfg.xml").build();
+                        Metadata metaData = new MetadataSources(standardRegistry).getMetadataBuilder().build();
+                        sessionFactory = metaData.getSessionFactoryBuilder().build();
+                } catch (Throwable th) {
+                        throw new ExceptionInInitializerError(th);
+                }
+        }
+
+        public static SessionFactory getSessionFactory() {
+                return sessionFactory;
+        }
+Creating an HTML page index.html:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Hibernate With XML</title>
+</head>
+<body>
+<a href="list”>List Products</a><br>
+
+</body>
+Creating a java class Eproduct to act as the Data Access Object(DAO)for the table:
+package com.ecommerce;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class EProduct {
+        private long ID;
+        private String name;
+        private BigDecimal price;
+        private Date dateAdded;
+        
+        public EProduct() {
+                
+        }
+        public EProduct(long id, String name, BigDecimal price, Date dateAdded) {
+                this.ID = id;
+                this.name = name;
+                this.price = price;
+                this.dateAdded = dateAdded;
+        }
+        
+        public long getID() {return this.ID; }
+        public String getName() { return this.name;}
+        public BigDecimal getPrice() { return this.price;}
+        public Date getDateAdded() { return this.dateAdded;}
+        
+        public void setID(long id) { this.ID = id;}
+        public void setName(String name) { this.name = name;}
+        public void setPrice(BigDecimal price) { this.price = price;}
+        public void setDateAdded(Date date) { this.dateAdded = date;}
+        Creating a ListProduct servlet:
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.*;
+import javax.xml.bind.*;
+
+import java.io.Serializable;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+
+
+import com.ecommerce.EProduct;
+import com.ecommerce.HibernateUtil;
+
+/**
+* Servlet implementation class ListProducts
+*/
+@WebServlet("/ListProducts")
+public class ListProducts extends HttpServlet {
+        private static final long serialVersionUID = 1L;
+       
+        
+        
+    /**
+* @see HttpServlet#HttpServlet()
+*/
+    public ListProducts() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+        /**
+         * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+         */
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+                // TODO Auto-generated method stub
+                 try {
+                        SessionFactory factory = HibernateUtil.getSessionFactory();
+                        
+                        Session session = factory.openSession();
+                        // using HQL
+                        List<EProduct> list = session.createQuery("from EProduct").list();
+                        
+                        session.close();
+                        
+                         PrintWriter out = response.getWriter();
+                         out.println("<html><body>");
+                         out.println("<b>Product Listing</b><br>");
+                         for(EProduct p: list) {
+                                 out.println("ID: " + String.valueOf(p.getID()) + ", Name: " + p.getName() +
+                                                 ", Price: " + String.valueOf(p.getPrice()) + ", Date Added: " + p.getDateAdded().toString() + "<br>");
+                         }
+                         
+                     out.println("</body></html>");
+                     
+                     
+                 } catch (Exception ex) {
+                         throw ex;
+                 }
+                    
+        }
+
+        /**
+         * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+         */
+        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+                // TODO Auto-generated method stub
+                doGet(request, response);
+        }
+
+}
+Configuring the table in the HIBERNATE with a hbm.xml file:
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.ecommerce">
+    <class name="EProduct" table="eproduct">
+        <id name="ID" column="ID">
+            <generator class="increment"/>
+        </id>
+        <property name="name" type="string" column="NAME"/>
+        <property name="price" type="big_decimal" column="PRICE"/>
+        <property name="dateAdded" type="timestamp" column="DATE_ADDED"/>
+
+    </class>
+</hibernate-mapping>
+
+Configuring web.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>HibernateXML</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>ListProducts</servlet-name>
+    <servlet-class>ListProducts</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ListProducts</servlet-name>
+    <url-pattern>/list</url-pattern>
+  </servlet-mapping>
+ 
+  
+</web-app>
+
+
+
+3.
+Configuring hibernate with hibernate.cfg.xml:
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>       
+  <session-factory>
+    <!-- Database connection settings -->
+    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="connection.url">jdbc:mysql://localhost:3306/ecommerce</property>
+    <property name="connection.username">mysql user id</property>
+    <property name="connection.password">mysql password</property>
+  </session-factory>
+</hibernate-configuration>
+Creating an hibernateutil class to initate hibernate in code:
+package com.ecommerce;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+
+public class HibernateUtil {
+
+        private static final SessionFactory sessionFactory;
+
+        static {
+                try {
+                        StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+                                        .configure("hibernate.cfg.xml").build();
+                        Metadata metaData = new MetadataSources(standardRegistry).getMetadataBuilder().build();
+                        sessionFactory = metaData.getSessionFactoryBuilder().build();
+                } catch (Throwable th) {
+                        throw new ExceptionInInitializerError(th);
+                }
+        }
+
+        public static SessionFactory getSessionFactory() {
+                return sessionFactory;
+        }
+}
+Creating an HTML page index.html:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Hibernate Annotation Example</title>
+</head>
+<body>
+<a href="list">List Products</a><br>
+
+</body>
+Creating a java classs Eproduct to act as the Data Access Object(DAO)for the table:
+package com.ecommerce;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;  
+import javax.persistence.Table;  
+  
+@Entity  
+@Table(name= "eproduct")   
+public class EProduct {    
+  
+        @Id @GeneratedValue   
+        @Column(name = "ID")
+        private long ID;
+        
+        @Column(name = "name")
+        private String name;
+        
+        @Column(name = "price")
+        private BigDecimal price;
+        
+        @Column(name = "date_added")
+        private Date dateAdded;  
+            
+        public long getID() {return this.ID; }
+        public String getName() { return this.name;}
+        public BigDecimal getPrice() { return this.price;}
+        public Date getDateAdded() { return this.dateAdded;}
+        
+        public void setID(long id) { this.ID = id;}
+        public void setName(String name) { this.name = name;}
+        public void setPrice(BigDecimal price) { this.price = price;}
+        public void setDateAdded(Date date) { this.dateAdded = date;}    
+}   
+Creating a ListProducts servlet:
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.*;
+import javax.xml.bind.*;
+
+import java.io.Serializable;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+
+
+import com.ecommerce.EProduct;
+import com.ecommerce.HibernateUtil;
+
+/**
+* Servlet implementation class ListProducts
+*/
+@WebServlet("/ListProducts")
+public class ListProducts extends HttpServlet {
+        private static final long serialVersionUID = 1L;
+       
+        
+        
+    /**
+* @see HttpServlet#HttpServlet()
+*/
+    public ListProducts() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+        /**
+         * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+         */
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+                // TODO Auto-generated method stub
+                 try {
+                        SessionFactory factory = HibernateUtil.getSessionFactory();
+                        
+                        Session session = factory.openSession();
+                        // using HQL
+                        List<EProduct> list = session.createQuery("from EProduct").list();
+                        
+                        session.close();
+                        
+                         PrintWriter out = response.getWriter();
+                         out.println("<html><body>");
+                         out.println("<b>Product Listing</b><br>");
+                         for(EProduct p: list) {
+                                 out.println("ID: " + String.valueOf(p.getID()) + ", Name: " + p.getName() +
+                                                 ", Price: " + String.valueOf(p.getPrice()) + ", Date Added: " + p.getDateAdded().toString() + "<br>");
+                         }
+                         
+                     out.println("</body></html>");
+                     
+                     
+                 } catch (Exception ex) {
+                         throw ex;
+                 }
+                    
+        }
+
+        /**
+         * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+         */
+        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+                // TODO Auto-generated method stub
+                doGet(request, response);
+        }
+
+}
+Configuring web.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>HibernateAnnotations</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>ListProducts</servlet-name>
+    <servlet-class>ListProducts</servlet-class>
+  </servlet>
+ 
+  <servlet-mapping>
+    <servlet-name>ListProducts</servlet-name>
+    <url-pattern>/list</url-pattern>
+  </servlet-mapping>
+ 
+  
+</web-app>
+
+4.
+Configuring hibernate with hibernate.cfg.xml:
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>       
+  <session-factory>
+    <!-- Database connection settings -->
+    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="connection.url">jdbc:mysql://localhost:3306/ecommerce</property>
+    <property name="connection.username">mysql user id</property>
+    <property name="connection.password">mysql password</property>
+  </session-factory>
+</hibernate-configuration>
+Configuring log4j with log4j.properties:
+# Direct log messages to a log file
+log4j.appender.file=org.apache.log4j.RollingFileAppender
+log4j.appender.file.File=/home/oem/Downloads/hibernate.log
+log4j.appender.file.MaxFileSize=1MB
+log4j.appender.file.MaxBackupIndex=1
+log4j.appender.file.layout=org.apache.log4j.PatternLayout
+log4j.appender.file.layout.ConversionPattern=%d{ABSOLUTE} %5p %c{1}:%L - %m%n
+ 
+# Direct log messages to stdout
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d{ABSOLUTE} %5p %c{1}:%L - %m%n
+ 
+# Root logger option
+log4j.rootLogger=INFO, file, stdout
+ 
+# Log everything. Good for troubleshooting
+log4j.logger.org.hibernate=INFO
+ 
+# Log all JDBC parameters
+log4j.logger.org.hibernate.type=ALL
+•	Be sure to change the path of the log file log4j.appender.file.File=xxxxx to an actual path in your disk
+Creating an HTML page index.html:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Hibernate Configuration Example</title>
+</head>
+<body>
+<a href="init">Initialize Hibernate</a><br>
+
+</body>
+</html>
+Creating an hibernateUtil class to initate hibernate in code:
+package com.ecommerce;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+
+public class HibernateUtil {
+
+        private static final SessionFactory sessionFactory;
+
+        static {
+                try {
+                        StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+                                        .configure("hibernate.cfg.xml").build();
+                        Metadata metaData = new MetadataSources(standardRegistry).getMetadataBuilder().build();
+                        sessionFactory = metaData.getSessionFactoryBuilder().build();
+                } catch (Throwable th) {
+                        throw new ExceptionInInitializerError(th);
+                }
+        }
+
+        public static SessionFactory getSessionFactory() {
+                return sessionFactory;
+        }
+}
+Creating an InitHibernate servlet:
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.*;
+import javax.xml.bind.*;
+
+import java.io.Serializable;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+
+import com.ecommerce.EProduct;
+import com.ecommerce.HibernateUtil;
+
+
+/**
+* Servlet implementation class InitHibernate
+*/
+@WebServlet("/InitHibernate")
+public class InitHibernate extends HttpServlet {
+        private static final long serialVersionUID = 1L;
+       
+        
+        
+    /**
+* @see HttpServlet#HttpServlet()
+*/
+    public InitHibernate() {
+        super();
+        // TODO Auto-generated constructor stub
+        
+    }
+
+   
+        /**
+         * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+         */
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+                // TODO Auto-generated method stub
+                 try {
+                         PrintWriter out = response.getWriter();
+                         out.println("<html><body>");
+
+                         SessionFactory factory = HibernateUtil.getSessionFactory();
+                                
+                         Session session = factory.openSession();
+                         out.println("Hibernate Session opened.<br>");
+                         session.close();
+                         out.println("Hibernate Session closed.<br>");
+                                
+                         out.println("</body></html>");
+                            
+                             
+                         } catch (Exception ex) {
+                                 throw ex;
+                         }
+
+        }
+
+        /**
+         * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+         */
+        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+                // TODO Auto-generated method stub
+                doGet(request, response);
+        }
+
+}
+
+Configuring web.xml:
+xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>HibernateLogging</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>InitHibernate</servlet-name>
+    <servlet-class>InitHibernate</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InitHibernate</servlet-name>
+    <url-pattern>/init</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
+
+
+
+
+5.
+
+package com;  
+  
+import java.util.List;  
+  
+public class Question {  
+private int id;  
+private String qname;  
+private List<String> answers;  
+}
+
+<?xml version='1.0' encoding='UTF-8'?>  
+<!DOCTYPE hibernate-mapping PUBLIC  
+          "-//Hibernate/Hibernate Mapping DTD 5.3//EN"  
+          "http://hibernate.sourceforge.net/hibernate-mapping-5.3.dtd">  
+  
+<hibernate-mapping>  
+ <class name="com.Question" table="q101">  
+   <id name="id">  
+     <generator class="increment"></generator>  
+   </id>  
+   <property name="qname"></property>  
+            
+   <bag name="answers" table="ans101">  
+     <key column="qid"></key>  
+     <element column="answer" type="string"></element>  
+   </bag>  
+            
+ </class>  
+            
+</hibernate-mapping> 
+
+<?xml version='1.0' encoding='UTF-8'?>  
+<!DOCTYPE hibernate-configuration PUBLIC  
+          "-//Hibernate/Hibernate Configuration DTD 5.3//EN"  
+          "http://hibernate.sourceforge.net/hibernate-configuration-5.3.dtd">  
+  
+<!-- Generated by MyEclipse Hibernate Tools.                   -->  
+<hibernate-configuration>  
+  
+    <session-factory>  
+        <property name="hbm2ddl.auto">update</property>  
+        <property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>  
+        <property name="connection.url">jdbc:oracle:thin:@localhost:1521:xe</property>  
+        <property name="connection.username">system</property>  
+        <property name="connection.password">jtp</property>  
+        <property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>  
+    <mapping resource="question.hbm.xml"/>  
+    </session-factory>  
+  
+</hibernate-configuration> 
+
+
+package com.javatpoint;    
+    
+import java.util.ArrayList;    
+  
+import org.hibernate.Session;  
+import org.hibernate.SessionFactory;  
+import org.hibernate.Transaction;  
+import org.hibernate.boot.Metadata;  
+import org.hibernate.boot.MetadataSources;  
+import org.hibernate.boot.registry.StandardServiceRegistry;  
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;  
+    
+public class StoreData {    
+ public static void main(String[] args) {    
+      
+     StandardServiceRegistry ssr=new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();  
+     Metadata meta=new MetadataSources(ssr).getMetadataBuilder().build();  
+       
+     SessionFactory factory=meta.buildSessionFactory();  
+     Session session=factory.openSession();  
+       
+    Transaction t=session.beginTransaction();    
+        
+    ArrayList<String> list1=new ArrayList<String>();    
+    list1.add("Java is a programming language");    
+    list1.add("Java is a platform");    
+        
+    ArrayList<String> list2=new ArrayList<String>();    
+    list2.add("Servlet is an Interface");    
+    list2.add("Servlet is an API");    
+        
+    Question question1=new Question();    
+    question1.setQname("What is Java?");    
+    question1.setAnswers(list1);    
+        
+    Question question2=new Question();    
+    question2.setQname("What is Servlet?");    
+    question2.setAnswers(list2);    
+        
+    session.persist(question1);    
+    session.persist(question2);    
+        
+    t.commit();    
+    session.close();    
+    System.out.println("success");    
+ }  
+}
+  
+
+6.
+
+<list name="answers" lazy="true">  
+          <key column="qid"></key>  
+          <index column="type"></index>  
+          <one-to-many class="com.MphasisLearningacademy.Answer"/>  
+</list>
+
+7.
+
+package com.;  
+  
+public class Address {  
+private String city,country;  
+private int pincode;
+public String getCity() {
+	return city;
+}
+public void setCity(String city) {
+	this.city = city;
+}
+public String getCountry() {
+	return country;
+}
+public void setCountry(String country) {
+	this.country = country;
+}
+public int getPincode() {
+	return pincode;
+}
+public void setPincode(int pincode) {
+	this.pincode = pincode;
+}  
+}  
+  
+
+package com.;  
+public class Employee {  
+private int id;  
+private String name;  
+private Address address;
+public int getId() {
+	return id;
+}
+public void setId(int id) {
+	this.id = id;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
+}
+public String getAddress() {
+	return address;
+}
+public void setAddress(String address) {
+	this.address = address;
+}
+}
+
+
+<class name="com.Mphasis.Employee" table="emp177">  
+<id name="id">  
+<generator class="increment"></generator>  
+</id>  
+<property name="name"></property>  
+  
+<component name="address" class="com.Mphasis.Address">  
+<property name="city"></property>  
+<property name="country"></property>  
+<property name="pincode"></property>  
+</component>  
+  
+</class>  
+
+  8.
+
+CREATE TABLE  "EMP558"   
+   (    "ID" NUMBER(10,0) NOT NULL ENABLE,   
+    "NAME" VARCHAR2(255 CHAR),   
+    "SALARY" FLOAT(126),   
+     PRIMARY KEY ("ID") ENABLE  
+   )  
+
+
+package com;  
+  
+public class Employee {  
+private int id;  
+private String name;  
+private float salary;  
+public int getId() {
+	return id;
+}
+public void setId(int id) {
+	this.id = id;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
+}
+public String getSalary() {
+	return salary;
+}
+public void setAddress(String Salary) {
+	this.salary = salary;
+}
+
+<?xml version='1.0' encoding='UTF-8'?>  
+<!DOCTYPE hibernate-mapping PUBLIC  
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"  
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">  
+  
+<hibernate-mapping>  
+<class name="com.javatpoint.Employee" table="emp558">  
+          <id name="id">  
+          <generator class="assigned"></generator>  
+          </id>  
+            
+          <property name="name"></property>  
+          <property name="salary"></property>  
+</class>  
+            
+</hibernate-mapping>  
+
+
+
+package com;  
+import org.springframework.orm.hibernate3.HibernateTemplate;  
+import java.util.*;  
+public class EmployeeDao {  
+HibernateTemplate template;  
+public void setTemplate(HibernateTemplate template) {  
+    this.template = template;  
+}  
+//method to save employee  
+public void saveEmployee(Employee e){  
+    template.save(e);  
+}  
+//method to update employee  
+public void updateEmployee(Employee e){  
+    template.update(e);  
+}  
+//method to delete employee  
+public void deleteEmployee(Employee e){  
+    template.delete(e);  
+}  
+//method to return one employee of given id  
+public Employee getById(int id){  
+    Employee e=(Employee)template.get(Employee.class,id);  
+    return e;  
+}  
+//method to return all employees  
+public List<Employee> getEmployees(){  
+    List<Employee> list=new ArrayList<Employee>();  
+    list=template.loadAll(Employee.class);  
+    return list;  
+}  
+}  
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans  
+    xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">  
+  
+  
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">  
+        <property name="driverClassName"  value="oracle.jdbc.driver.OracleDriver"></property>  
+        <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"></property>  
+        <property name="username" value="system"></property>  
+        <property name="password" value="oracle"></property>  
+    </bean>  
+      
+    <bean id="mysessionFactory"  class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">  
+        <property name="dataSource" ref="dataSource"></property>  
+          
+        <property name="mappingResources">  
+        <list>  
+        <value>employee.hbm.xml</value>  
+        </list>  
+        </property>  
+          
+        <property name="hibernateProperties">  
+            <props>  
+                <prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>  
+                <prop key="hibernate.hbm2ddl.auto">update</prop>  
+                <prop key="hibernate.show_sql">true</prop>  
+                  
+            </props>  
+        </property>  
+    </bean>  
+      
+    <bean id="template" class="org.springframework.orm.hibernate3.HibernateTemplate">  
+    <property name="sessionFactory" ref="mysessionFactory"></property>  
+    </bean>  
+      
+    <bean id="d" class="com.javatpoint.EmployeeDao">  
+    <property name="template" ref="template"></property>  
+    </bean>  
+      
+      
+    </beans>  
+
+
+
+import org.springframework.beans.factory.BeanFactory;  
+import org.springframework.beans.factory.xml.XmlBeanFactory;  
+import org.springframework.core.io.ClassPathResource;  
+import org.springframework.core.io.Resource;  
+  
+public class InsertTest {  
+public static void main(String[] args) {  
+      
+    Resource r=new ClassPathResource("applicationContext.xml");  
+    BeanFactory factory=new XmlBeanFactory(r);  
+      
+    EmployeeDao dao=(EmployeeDao)factory.getBean("d");  
+      
+    Employee e=new Employee();  
+    e.setId(114);  
+    e.setName("varun");  
+    e.setSalary(50000);  
+      
+    dao.saveEmployee(e);  
+      
+}  
+}  
 
